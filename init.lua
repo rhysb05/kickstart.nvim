@@ -1,6 +1,4 @@
 --[[
-
-=====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
@@ -19,28 +17,6 @@
 ========                                                     ========
 =====================================================================
 =====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
 Kickstart Guide:
 
   TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
@@ -285,7 +261,7 @@ require('lazy').setup({
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
-      delay = 0,
+      delay = 1500,
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -668,7 +644,39 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
+        yamlls = {
+          -- Have to add this for yamlls to understand that we support line folding
+          capabilities = {
+            textDocument = {
+              foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+              },
+            },
+          },
+          -- lazy-load schemastore when needed
+          on_new_config = function(new_config)
+            new_config.settings.yaml.schemas = vim.tbl_deep_extend('force', new_config.settings.yaml.schemas or {}, require('schemastore').yaml.schemas())
+          end,
+          settings = {
+            redhat = { telemetry = { enabled = false } },
+            yaml = {
+              keyOrdering = false,
+              format = {
+                enable = true,
+              },
+              validate = true,
+              schemaStore = {
+                -- Must disable built-in schemaStore support to use
+                -- schemas from SchemaStore.nvim plugin
+                enable = false,
+                -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+                url = '',
+              },
+            },
+          },
+        },
         --
 
         lua_ls = {
