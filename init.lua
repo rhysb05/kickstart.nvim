@@ -211,10 +211,7 @@ require('lazy').setup({
   'xiyaowong/transparent.nvim',
 
   {
-    'goolord/alpha-nvim',
-    config = function()
-      require('alpha').setup(require('alpha.themes.dashboard').config)
-    end,
+    require('plugins.alpha')
   },
 
   -- NOTE: Plugins can also be added by using a table,
