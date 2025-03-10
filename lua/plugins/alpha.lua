@@ -40,7 +40,7 @@ return {
       dashboard.button('n', '   New file', ':ene <BAR> startinsert <CR>'),
       dashboard.button('f', '󰮗   Find file', ':cd $HOME | Telescope find_files<CR>'),
       dashboard.button('r', '   Recent', ':Telescope oldfiles<CR>'),
-      dashboard.button('R', '󱘞   Ripgrep', ':Telescope live_grep<CR>'),
+      dashboard.button('R', '󱘞   Grep dir', ':Telescope live_grep<CR>'),
       dashboard.button('q', '󰗼   Quit', ':qa<CR>'),
     }
 
