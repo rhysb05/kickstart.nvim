@@ -67,6 +67,11 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Settting up the highlight to keep my cursor line color
+-- vim.g.transparent_groups = vim.list_extend({
+--  'EndOfBuffer',
+-- }, { 'ExtraGroup' })
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -222,7 +227,6 @@ require('lazy').setup({
     -- use opts = {} for passing setup options
     -- this is equivalent to setup({}) function
   },
-
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -920,9 +924,30 @@ require('lazy').setup({
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
+        style = 'night',
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
+        -- Customizes the hightlighted color of the numbered line your cursor is on
+        on_highlights = function(hl, c)
+          -- Cursor line background color
+          hl.CursorLine = {
+            bg = '#000000',
+          }
+          -- Cursor Line number color
+          hl.CursorLineNr = {
+            bg = '#000000',
+            fg = '#8167f5',
+          }
+          --Comment color
+          hl.Comment = {
+            fg = '#999797',
+          }
+          -- Line number color
+          hl.LineNr = {
+            fg = '#FFFFFF',
+          }
+        end,
       }
 
       -- Load the colorscheme here.
