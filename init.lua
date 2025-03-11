@@ -220,6 +220,7 @@ require('lazy').setup({
   'tpope/vim-dadbod',
   'kristijanhusak/vim-dadbod-completion',
   'kristijanhusak/vim-dadbod-ui',
+  'nvim-neo-tree/neo-tree.nvim',
   {
     'windwp/nvim-autopairs',
     event = 'InsertEnter',
