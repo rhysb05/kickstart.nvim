@@ -445,6 +445,9 @@ require('lazy').setup({
     end,
   },
 
+  -- Markdown render plugin
+  -- This plugin allows you to preview markdown files in a floating window.
+
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -739,6 +742,15 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_installation = false,
+        -- `stylua` is Mason-installed as a formatter for conform.nvim, not as an LSP
+        -- server. nvim-lspconfig also ships an (experimental) `stylua` server
+        -- definition that launches `stylua --lsp`, which our installed StyLua
+        -- version doesn't support, so exclude it from mason-lspconfig's
+        -- automatic_enable (this is what actually gates server auto-start now;
+        -- the `handlers` table below is legacy and no longer does the gating).
+        automatic_enable = {
+          exclude = { 'stylua' },
+        },
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -1043,7 +1055,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1069,6 +1081,16 @@ require('lazy').setup({
       lazy = '💤 ',
     },
   },
+})
+
+-- This line sets up the terminal to remove the line numbers and gutter when I open a command line in nvim
+vim.api.nvim_create_autocmd('TermOpen', {
+  pattern = '*',
+  callback = function()
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+    vim.wo.signcolumn = 'no' -- optional: also hides the sign/gutter column
+  end,
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
