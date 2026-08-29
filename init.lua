@@ -343,7 +343,7 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    branch = 'master',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -447,6 +447,17 @@ require('lazy').setup({
 
   -- Markdown render plugin
   -- This plugin allows you to preview markdown files in a floating window.
+
+  -- install with yarn or npm
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    build = 'cd app && npm install',
+    init = function()
+      vim.g.mkdp_filetypes = { 'markdown' }
+    end,
+    ft = { 'markdown' },
+  },
 
   -- LSP Plugins
   {
@@ -762,6 +773,14 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- Dart/Flutter: dartls ships with the Dart SDK itself (not a Mason
+      -- package), so it's configured and enabled directly instead of going
+      -- through mason-tool-installer/mason-lspconfig like the servers above.
+      vim.lsp.config('dartls', {
+        capabilities = capabilities,
+      })
+      vim.lsp.enable 'dartls'
     end,
   },
 
