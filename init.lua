@@ -343,7 +343,7 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    branch = 'master',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -443,6 +443,20 @@ require('lazy').setup({
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
     end,
+  },
+
+  -- Markdown render plugin
+  -- This plugin allows you to preview markdown files in a floating window.
+
+  -- install with yarn or npm
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    build = 'cd app && npm install',
+    init = function()
+      vim.g.mkdp_filetypes = { 'markdown' }
+    end,
+    ft = { 'markdown' },
   },
 
   -- LSP Plugins
@@ -739,6 +753,15 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_installation = false,
+        -- `stylua` is Mason-installed as a formatter for conform.nvim, not as an LSP
+        -- server. nvim-lspconfig also ships an (experimental) `stylua` server
+        -- definition that launches `stylua --lsp`, which our installed StyLua
+        -- version doesn't support, so exclude it from mason-lspconfig's
+        -- automatic_enable (this is what actually gates server auto-start now;
+        -- the `handlers` table below is legacy and no longer does the gating).
+        automatic_enable = {
+          exclude = { 'stylua' },
+        },
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -750,6 +773,14 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- Dart/Flutter: dartls ships with the Dart SDK itself (not a Mason
+      -- package), so it's configured and enabled directly instead of going
+      -- through mason-tool-installer/mason-lspconfig like the servers above.
+      vim.lsp.config('dartls', {
+        capabilities = capabilities,
+      })
+      vim.lsp.enable 'dartls'
     end,
   },
 
@@ -1044,7 +1075,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1070,6 +1101,16 @@ require('lazy').setup({
       lazy = '💤 ',
     },
   },
+})
+
+-- This line sets up the terminal to remove the line numbers and gutter when I open a command line in nvim
+vim.api.nvim_create_autocmd('TermOpen', {
+  pattern = '*',
+  callback = function()
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+    vim.wo.signcolumn = 'no' -- optional: also hides the sign/gutter column
+  end,
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
